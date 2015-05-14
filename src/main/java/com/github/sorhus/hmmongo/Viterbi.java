@@ -1,5 +1,6 @@
 package com.github.sorhus.hmmongo;
 
+
 public class Viterbi {
 
     private double[] pi;
@@ -13,11 +14,11 @@ public class Viterbi {
         this.pi = pi;
         this.A = A;
         this.B = B;
-        this.PHI = new double[pi.length][];
-        this.PSI = new int[pi.length][];
-        for(int i = 0; i < pi.length; i++) {
-            PHI[i] = new double[T];
-            PSI[i] = new int[T];
+        this.PHI = new double[T][];
+        this.PSI = new int[T][];
+        for(int i = 0; i < T; i++) {
+            PHI[i] = new double[pi.length];
+            PSI[i] = new int[pi.length];
         }
     }
 
@@ -28,30 +29,28 @@ public class Viterbi {
     }
 
     private void initialise(int[] observations) {
-        for(int i = 0; i < observations.length; i++) {
-            final int observation = observations[i];
-            PHI[0][i] = pi[i] * B[i][observation];
+        for(int i = 0; i < pi.length; i++) {
+            PHI[0][i] = pi[i] * B[i][observations[0]];
+            PSI[0][i] = -1;
         }
     }
 
     private void recurse(int[] observations) {
         for(int t = 1; t < observations.length; t++) {
-            double[] phi = PHI[t];
-            int[] psi = PSI[t];
             for(int j = 0; j < pi.length; j++) {
                 double max = Integer.MIN_VALUE;
-                int arg = -1;
+                int argmax = -1;
                 double b = 0.0;
-                for(int i = 0; i < observations.length; i++) {
-                    double v = PHI[t-1][i] * A[i][j];
+                for(int i = 0; i < pi.length; i++) {
+                    final double v = PHI[t-1][i] * A[i][j];
                     if(v > max) {
                         max = v;
-                        arg = i;
-                        b = B[i][observations[t]];
+                        argmax = i;
+                        b = B[j][observations[t]];
                     }
                 }
-                phi[j] = max * b;
-                psi[j] = arg;
+                PHI[t][j] = max * b;
+                PSI[t][j] = PHI[t][j] == 0.0 ? -1 : argmax;
             }
         }
     }
@@ -59,14 +58,13 @@ public class Viterbi {
     private int[] terminate(int[] observations) {
         int path[] = new int[observations.length];
         double max = Integer.MIN_VALUE;
-        double[] phi = PHI[observations.length - 1];
         for(int i = 0; i < pi.length; i++) {
-            if(phi[i] > max) {
-                max = phi[i];
-                path[observations.length-1] = i;
+            if(PHI[observations.length - 1][i] > max) {
+                max = PHI[observations.length - 1][i];
+                path[observations.length - 1] = i;
             }
         }
-        for(int t = observations.length - 2; t < 0; t--) {
+        for(int t = observations.length - 2; t > -1; t--) {
             path[t] = PSI[t+1][path[t+1]];
         }
         return path;
@@ -77,13 +75,34 @@ public class Viterbi {
         double[][] A = {{0, 2.0/5, 3.0/5}, {1.0/5, 0, 4.0/5}, {0, 0, 1.0}};
         double[][] B = {{0, 1.0}, {9.0/10, 1.0/10}, {1.0/2, 1.0/2}};
 
-        int[] observations = new int[] {0, 1, 0};
-        int[] result = new Viterbi(pi, A, B, 3).getPath(observations);
+        Viterbi viterbi = new Viterbi(pi, A, B, 3);
 
+
+        int[] observations = new int[] {0, 1, 0};
+
+        int[] result = viterbi.getPath(observations);
+
+        System.out.println();
         System.out.print("Optimal path is: ");
         for (int t = 0; t < result.length; t++) {
-            System.out.print(t + " ");
+            System.out.print(result[t] + " ");
         }
         System.out.println();
+        System.out.println();
+        System.out.println("PHI:");
+        for(double[] phi : viterbi.PHI) {
+            for(double p : phi) {
+                System.out.print(p + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("PSI:");
+        for(int[] psi : viterbi.PSI) {
+            for(int p : psi) {
+                System.out.print(p + " ");
+            }
+            System.out.println();
+        }
     }
 }
