@@ -1,12 +1,15 @@
 package com.github.sorhus.hmmongo;
 
+import java.io.Serializable;
+
 /**
  * Hidden Markov Model. Defined by the initial distribution,
  * the state transition distributions and the emission distributions.
  *
  * States and emissions are both encoded as consecutive nonnegative integers
+ * Distributions are either probabilities or log probabilities
  */
-public class HMM {
+public class HMM implements Serializable {
 
     /**
      * Initial distribution
@@ -28,12 +31,21 @@ public class HMM {
      */
     final public int n;
 
-    public HMM(double[] pi, double[][] A, double[][] B) {
+    /**
+     * Whether or not this HMM is represented in logarithms
+     */
+    final public boolean log;
+
+    public HMM(double[] pi, double[][] A, double[][] B, boolean log) {
         this.pi = pi;
         this.A = A;
         this.B = B;
+        this.log = log;
         this.n = pi.length;
         verify();
+    }
+    public HMM(double[] pi, double[][] A, double[][] B) {
+        this(pi, A, B, false);
     }
 
     private void verify() {
@@ -52,4 +64,41 @@ public class HMM {
             }
         }
     }
+
+    public HMM toLog() {
+        double[] pi_n = new double[n];
+        double[][] A_n = new double[n][];
+        double[][] B_n = new double[n][];
+        for (int i = 0; i < n; i++) {
+            pi_n[i] = Math.log(pi[i]);
+            A_n[i] = new double[n];
+            for (int j = 0; j < n; j++) {
+                A_n[i][j] = Math.log(A[i][j]);
+            }
+            B_n[i] = new double[B[i].length];
+            for (int j = 0; j < B[i].length; j++) {
+                B_n[i][j] = Math.log(B[i][j]);
+            }
+        }
+        return new HMM(pi_n, A_n, B_n, true);
+    }
+
+    public HMM fromLog() {
+        double[] pi_n = new double[n];
+        double[][] A_n = new double[n][];
+        double[][] B_n = new double[n][];
+        for (int i = 0; i < n; i++) {
+            pi_n[i] = Math.exp(pi[i]);
+            A_n[i] = new double[n];
+            for (int j = 0; j < n; j++) {
+                A_n[i][j] = Math.exp(A[i][j]);
+            }
+            B_n[i] = new double[B[i].length];
+            for (int j = 0; j < B[i].length; j++) {
+                B_n[i][j] = Math.exp(B[i][j]);
+            }
+        }
+        return new HMM(pi_n, A_n, B_n, false);
+    }
+
 }
