@@ -6,7 +6,7 @@ Here's how to run it
 * `HADOOP_CLIENT_OPT=-Xmx2g`
 
 * local mode:
-`hadoop jar target/hmmongo-0.0.1-SNAPSHOT-jar-with-dependencies.jar com.twitter.scalding.Tool com.github.sorhus.hmmongo.ViterbiJob --local --pi src/main/resources/tcrb_pi.gz --A src/main/resources/tcrb_A.gz --B src/main/resources/tcrb_B.gz --T 101 --input src/main/resources/SRR060692_1.sample --output output`
+`hadoop jar target/hmmongo-<version>.jar com.twitter.scalding.Tool com.github.sorhus.hmmongo.ViterbiJob --local --pi src/main/resources/tcrb_pi.gz --A src/main/resources/tcrb_A.gz --B src/main/resources/tcrb_B.gz --T 101 --input src/main/resources/SRR060692_1.sample --output output`
 
 * hdfs mode:
-`hadoop jar target/hmmongo-0.0.1-SNAPSHOT-jar-with-dependencies.jar com.twitter.scalding.Tool com.github.sorhus.hmmongo.ViterbiJob --hdfs --pi src/main/resources/tcrb_pi.gz --A src/main/resources/tcrb_A.gz --B src/main/resources/tcrb_B.gz --T 101 --input /user/anton/SRR060692_1.sample --output /user/anton/output`
+`hadoop jar target/hmmongo-<version>.jar com.twitter.scalding.Tool com.github.sorhus.hmmongo.ViterbiJob --hdfs --pi src/main/resources/tcrb_pi.gz --A src/main/resources/tcrb_A.gz --B src/main/resources/tcrb_B.gz --T 101 --input /user/anton/SRR060692_1.sample --output /user/anton/output`
