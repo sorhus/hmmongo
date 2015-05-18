@@ -2,13 +2,14 @@ package com.github.sorhus.hmmongo
 
 import com.twitter.scalding.typed.TypedPipe
 import com.twitter.scalding.{TypedTsv, TextLine, Job, Args}
+import HMMFactory._
 
 class ViterbiJob(args: Args) extends Job(args) {
 
-  val hmm: HMM = HMMFactory.fromFiles(args("pi"), args("A"), args("B")).toLog
+  val hmm: HMM = fromMatrixToAdjacency(toLog(fromFiles(args("pi"), args("A"), args("B"))))
   println(s"Loaded hmm, n = ${hmm.n}")
-  val encoder: (Array[Char]) => Array[Int] = (c: Array[Char]) => c.map(DNAEncoder.encode)
-  val viterbi: (Array[Int]) => Array[Int] = new Viterbi(hmm, args("T").toInt).getPath
+  val encoder = (c: Array[Char]) => c.map(DNAEncoder.encode)
+  val viterbi = (a: Array[Int]) => new Viterbi(hmm, args("T").toInt).getPath(a).path
 
   TypedPipe.from(TextLine(args("input")))
     .map(_.toCharArray)
