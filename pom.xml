@@ -12,8 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.7</java.version>
-        <scala.version>2.10.5</scala.version>
+        <java.version>1.8</java.version>
+        <scala.version>2.11.6</scala.version>
     </properties>
 
     <build>
@@ -156,7 +156,7 @@
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>scalding-core_2.10</artifactId>
+            <artifactId>scalding-core_2.11</artifactId>
             <version>0.14.0</version>
         </dependency>
         <dependency>

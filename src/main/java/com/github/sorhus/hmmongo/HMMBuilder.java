@@ -13,6 +13,8 @@ import java.util.zip.GZIPInputStream;
 public class HMMBuilder {
 
     private String piPath, APath, BPath;
+    private double[] pi;
+    private double[][] rawA, B;
     private boolean inLog, outLog = false;
     private boolean adjacency = false;
     private KeyedFactory keyedFactory;
@@ -31,6 +33,19 @@ public class HMMBuilder {
         return this;
     }
 
+    public HMMBuilder fromArrays(double[] pi, double[][] A, double[][] B) {
+        return fromArrays(pi, A, B, false);
+    }
+
+
+    public HMMBuilder fromArrays(double[] pi, double[][] A, double[][] B, boolean log) {
+        this.pi = pi;
+        this.rawA = A;
+        this.B = B;
+        this.inLog = log;
+        return this;
+    }
+
 
     public HMMBuilder adjacency() {
         this.adjacency = true;
@@ -43,18 +58,21 @@ public class HMMBuilder {
     }
 
     public HMM build() throws IOException {
-        keyedFactory = adjacency ? new KeyedMapFactory() : new KeyedListFactory();
-        double[] pi;
         List<Keyed> A;
-        double[][] B;
-        try(Scanner sc = getScanner(piPath)) {
-             pi = readArray(sc);
-        }
-        try(Scanner sc = getScanner(APath)) {
-            A = readA(sc, pi.length);
-        }
-        try(Scanner sc = getScanner(BPath)) {
-            B = readB(sc, pi.length);
+        if(pi != null && rawA != null && B != null) {
+            pi = transfromArray(pi);
+            A = transfromA(rawA);
+            B = transfromB(B);
+        } else {
+            try(Scanner sc = getScanner(piPath)) {
+                pi = readArray(sc);
+            }
+            try(Scanner sc = getScanner(APath)) {
+                A = readA(sc, pi.length);
+            }
+            try(Scanner sc = getScanner(BPath)) {
+                B = readB(sc, pi.length);
+            }
         }
         return new HMM(pi, A, B, outLog);
     }
@@ -83,6 +101,48 @@ public class HMMBuilder {
         return result;
     }
 
+    private double[] transfromArray(double[] row) {
+        double[] result = new double[row.length];
+        for (int i = 0; i < row.length; i++) {
+            result[i] = getValue(row[i]);
+        }
+        return result;
+    }
+
+    private List<Keyed> readA(Scanner sc, int n) throws IOException {
+        keyedFactory = adjacency ? new KeyedMapFactory() : new KeyedListFactory();
+        List<Keyed> A = new ArrayList<>(n);
+        for (int j = 0; j < n; j++) {
+            A.add(j, keyedFactory.create(n));
+        }
+        for (int i = 0; i < n; i++) {
+            final double[] row = readArray(sc, n);
+            for (int j = 0; j < n; j++) {
+                if(populate(row[j])) {
+                    A.get(j).put(i, row[j]);
+                }
+            }
+        }
+        return A;
+    }
+
+    private List<Keyed> transfromA(double[][] rawA) {
+        keyedFactory = adjacency ? new KeyedMapFactory() : new KeyedListFactory();
+        List<Keyed> A = new ArrayList<>(rawA.length);
+        for (int j = 0; j < rawA.length; j++) {
+            A.add(j, keyedFactory.create(rawA.length));
+        }
+        for (int i = 0; i < rawA.length; i++) {
+            for (int j = 0; j < rawA.length; j++) {
+                final double d = getValue(rawA[i][j]);
+                if(populate(d)) {
+                    A.get(j).put(i, d);
+                }
+            }
+        }
+        return A;
+    }
+
     private double[][] readB(Scanner sc, int n) throws IOException {
         double[][] result = new double[n][];
         result[0] = readArray(new Scanner(sc.nextLine()));
@@ -92,24 +152,12 @@ public class HMMBuilder {
         return result;
     }
 
-    private List<Keyed> readA(Scanner sc, int n) throws IOException {
-        List<Keyed> A = new ArrayList<>(n);
-        for (int j = 0; j < n; j++) {
-            A.add(j, keyedFactory.get(n));
+    private double[][] transfromB(double[][] B) {
+        double[][] result = new double[B.length][];
+        for (int i = 0; i < B.length; i++) {
+            result[i] = transfromArray(B[i]);
         }
-        for (int i = 0; i < n; i++) {
-            if(i % 100 == 0) {
-                System.err.print(".");
-            }
-            final double[] row = readArray(sc, n);
-            for (int j = 0; j < n; j++) {
-                if(populate(row[j])) {
-                    A.get(j).put(i, row[j]);
-                } else {
-                }
-            }
-        }
-        return A;
+        return result;
     }
 
     private boolean populate(double d) {
@@ -123,28 +171,32 @@ public class HMMBuilder {
     }
 
     private double getValue(Scanner sc) {
-        double value = sc.nextDouble();
+        return getValue(sc.nextDouble());
+    }
+
+    private double getValue(double value) {
         if(!inLog && outLog) {
-             return Math.log(value);
+            return Math.log(value);
         } else if(inLog && !outLog) {
-             return Math.exp(value);
+            return Math.exp(value);
         } else {
             return value;
         }
     }
 
+
     private interface KeyedFactory {
-        Keyed get(int n);
+        Keyed create(int n);
     }
     private class KeyedListFactory implements KeyedFactory {
         @Override
-        public Keyed get(int n) {
+        public Keyed create(int n) {
             return new KeyedList(n);
         }
     }
     private class KeyedMapFactory implements KeyedFactory {
         @Override
-        public Keyed get(int n) {
+        public Keyed create(int n) {
             return new KeyedMap();
         }
     }

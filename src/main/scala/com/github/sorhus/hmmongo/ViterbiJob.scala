@@ -2,7 +2,6 @@ package com.github.sorhus.hmmongo
 
 import com.twitter.scalding.typed.TypedPipe
 import com.twitter.scalding.{TypedTsv, TextLine, Job, Args}
-import HMMFactory._
 
 class ViterbiJob(args: Args) extends Job(args) {
 
