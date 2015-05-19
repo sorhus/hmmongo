@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-// TODO rewrite to use less memory
+// TODO get rid of this cruft
 public class HMMFactory {
 
     public static HMM fromFiles(String piPath, String APath, String BPath) throws IOException {

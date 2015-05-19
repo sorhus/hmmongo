@@ -6,7 +6,8 @@ import HMMFactory._
 
 class ViterbiJob(args: Args) extends Job(args) {
 
-  val hmm: HMM = fromMatrixToAdjacency(toLog(fromFiles(args("pi"), args("A"), args("B"))))
+  val hmm: HMM = new HMMBuilder().fromFiles(args("pi"), args("A"), args("B"))
+    .adjacency().asLog().build()
   println(s"Loaded hmm, n = ${hmm.n}")
   val encoder = (c: Array[Char]) => c.map(DNAEncoder.encode)
   val viterbi = (a: Array[Int]) => new Viterbi(hmm, args("T").toInt).getPath(a).path

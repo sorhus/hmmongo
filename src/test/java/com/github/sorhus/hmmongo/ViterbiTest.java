@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
+// TODO refactor to use HMMBuilder
 public class ViterbiTest<V extends Viterbi> {
 
     static double[] pi = {1.0 / 3, 1.0 / 3, 1.0 / 3};

@@ -10,11 +10,14 @@ import java.util.Scanner;
 public class DNAApp {
 
     public static void main(String[] args) throws IOException {
-        HMM mHmm = HMMFactory.toLog(HMMFactory.fromFiles(args[0], args[1], args[2]));
-        HMM aHmm = HMMFactory.fromMatrixToAdjacency(mHmm);
+//        HMM mHmm = HMMFactory.toLog(HMMFactory.fromFiles());
+        HMM aHmm = new HMMBuilder().fromFiles(args[0], args[1], args[2])
+                .adjacency()
+                .asLog()
+                .build();
         System.out.println("Read in HMM");
         int T = Integer.parseInt(args[3]);
-        Viterbi mViterbi = new Viterbi(mHmm, T);
+//        Viterbi mViterbi = new Viterbi(mHmm, T);
         Viterbi aViterbi = new Viterbi(aHmm, T);
         Scanner sc = new Scanner(new BufferedReader(new FileReader(args[4])));
         System.out.println("Found observations");
@@ -25,8 +28,8 @@ public class DNAApp {
                 observations[i] = DNAEncoder.encode(chars[i]);
             }
             long t = System.currentTimeMillis();
-            ViterbiResult mResult = mViterbi.getPath(observations);
-            print(mResult, t);
+//            ViterbiResult mResult = mViterbi.getPath(observations);
+//            print(mResult, t);
             t = System.currentTimeMillis();
             ViterbiResult aResult = aViterbi.getPath(observations);
             print(aResult, t);
