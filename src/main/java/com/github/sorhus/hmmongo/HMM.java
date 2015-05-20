@@ -1,6 +1,5 @@
 package com.github.sorhus.hmmongo;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  * States and emissions are both encoded as consecutive nonnegative integers
  * Distributions are either expressed as probabilities or log probabilities
  */
-public class HMM implements Serializable {
+public class HMM {
 
     /**
      * Initial distribution

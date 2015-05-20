@@ -1,14 +1,12 @@
 package com.github.sorhus.hmmongo;
 
-import java.io.Serializable;
-
-public class Viterbi implements Serializable {
+public class ViterbiImpl {
 
     final HMM hmm;
     final double[][] PHI;
     final int[][] PSI;
 
-    public Viterbi(HMM hmm, int T) {
+    public ViterbiImpl(HMM hmm, int T) {
         this.hmm = hmm;
         this.PHI = new double[T][];
         this.PSI = new int[T][];
@@ -18,7 +16,7 @@ public class Viterbi implements Serializable {
         }
     }
 
-    public ViterbiResult getPath(int[] observations) {
+    public ViterbiResult getPath(int[] observations) throws NoPossiblePathException {
         initialise(observations[0]);
         recurse(observations);
         return terminate(observations.length);
@@ -59,7 +57,7 @@ public class Viterbi implements Serializable {
         }
     }
 
-    protected ViterbiResult terminate(int observations) {
+    protected ViterbiResult terminate(int observations) throws NoPossiblePathException {
         int path[] = new int[observations];
         double max = Double.NEGATIVE_INFINITY;
         for(int i = 0; i < hmm.n; i++) {
@@ -70,7 +68,7 @@ public class Viterbi implements Serializable {
         }
         for(int t = observations - 2; t > -1; t--) {
             if(path[t + 1] < 0) {
-                return null;
+                throw new NoPossiblePathException();
             }
             path[t] = PSI[t + 1][path[t + 1]];
         }

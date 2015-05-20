@@ -11,27 +11,22 @@ public class KeyedList extends ArrayList<Double> implements Keyed {
 
     @Override
     public Iterable<Integer> keys() {
-        return new Iterable<Integer>() {
+        return () -> new Iterator<Integer>() {
+            int i = 0;
             @Override
-            public Iterator<Integer> iterator() {
-                return new Iterator<Integer>() {
-                    int i = 0;
-                    @Override
-                    public boolean hasNext() {
+            public boolean hasNext() {
                         return i < size();
                     }
 
-                    @Override
-                    public Integer next() {
+            @Override
+            public Integer next() {
                         return i++;
                     }
 
-                    @Override
-                    public void remove() {
+            @Override
+            public void remove() {
                         throw new RuntimeException();
                     }
-                };
-            }
         };
     }
 

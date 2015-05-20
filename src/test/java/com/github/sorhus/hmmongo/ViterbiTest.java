@@ -27,35 +27,35 @@ public class ViterbiTest {
     }
 
     @Test
-    public void testAdjacencyRegular() throws IOException {
+    public void testAdjacencyRegular() throws IOException, NoPossiblePathException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().build();
-        Viterbi instance = new Viterbi(hmm, 3);
-        testRegular(instance);
+        ViterbiImpl instance = new ViterbiImpl(hmm, 3);
+        checkRegular(instance);
     }
 
     @Test
-    public void testAdjacencyLog() throws IOException {
+    public void testAdjacencyLog() throws IOException, NoPossiblePathException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().asLog().build();
-        Viterbi instance = new Viterbi(hmm, 3);
-        testLog(instance);
+        ViterbiImpl instance = new ViterbiImpl(hmm, 3);
+        checkLog(instance);
     }
 
     @Test
-    public void testMatrixRegular() throws IOException {
+    public void testMatrixRegular() throws IOException, NoPossiblePathException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).build();
-        Viterbi instance = new Viterbi(hmm, 3);
-        testRegular(instance);
+        ViterbiImpl instance = new ViterbiImpl(hmm, 3);
+        checkRegular(instance);
     }
 
     @Test
-    public void testMatrixLog() throws IOException {
+    public void testMatrixLog() throws IOException, NoPossiblePathException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).asLog().build();
-        Viterbi instance = new Viterbi(hmm, 3);
-        testLog(instance);
+        ViterbiImpl instance = new ViterbiImpl(hmm, 3);
+        checkLog(instance);
     }
 
 
-    public void testRegular(Viterbi instance) {
+    public void checkRegular(ViterbiImpl instance) throws NoPossiblePathException {
         ViterbiResult result = instance.getPath(input);
         assertArrayEquals(expected, result.path);
         for (int i = 0; i < 3; i++) {
@@ -64,7 +64,7 @@ public class ViterbiTest {
         }
     }
 
-    public void testLog(Viterbi instance) {
+    public void checkLog(ViterbiImpl instance) throws NoPossiblePathException {
         ViterbiResult result = instance.getPath(input);
         assertArrayEquals(expected, result.path);
         for (int i = 0; i < 3; i++) {
