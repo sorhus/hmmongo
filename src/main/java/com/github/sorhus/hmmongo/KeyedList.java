@@ -15,18 +15,13 @@ public class KeyedList extends ArrayList<Double> implements Keyed {
             int i = 0;
             @Override
             public boolean hasNext() {
-                        return i < size();
-                    }
+                return i < size();
+            }
 
             @Override
             public Integer next() {
-                        return i++;
-                    }
-
-            @Override
-            public void remove() {
-                        throw new RuntimeException();
-                    }
+                return i++;
+            }
         };
     }
 
