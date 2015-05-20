@@ -8,7 +8,7 @@ class ViterbiJob(args: Args) extends Job(args) {
   val hmm: HMM = new HMMBuilder().fromFiles(args("pi"), args("A"), args("B"))
     .adjacency().asLog().build()
   val encoder = new DNAEncoder(args.boolean("input-capitals"))
-  val viterbi: Viterbi = new Viterbi(hmm, args("T").toInt)
+  val viterbi: Viterbi = new Viterbi(hmm, args("T").toInt, args.boolean("experimental"))
 
   TypedPipe.from(TextLine(args("input")))
     .flatMap(encoder)
