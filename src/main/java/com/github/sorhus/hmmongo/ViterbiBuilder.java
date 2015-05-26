@@ -8,8 +8,8 @@ public class ViterbiBuilder {
         this(hmm, T, false);
     }
 
-    public ViterbiBuilder(HMM hmm, int T, boolean experimental) {
-        this.impl = experimental ? new ExperimentalViterbiImpl(hmm, T) : new ViterbiImpl(hmm, T);
+    public ViterbiBuilder(HMM hmm, int T, boolean experiment) {
+        this.impl = experiment ? new MaybeFasterViterbiImpl(hmm, T) : new ViterbiImpl(hmm, T);
     }
 
     Viterbi<int[], int[]> build() {
