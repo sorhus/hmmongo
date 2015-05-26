@@ -27,36 +27,36 @@ public class ViterbiTest {
     }
 
     @Test
-    public void testAdjacencyRegular() throws IOException, NoPossiblePathException {
+    public void testAdjacencyRegular() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().build();
         ViterbiImpl instance = new ViterbiImpl(hmm, 3);
         checkRegular(instance);
     }
 
     @Test
-    public void testAdjacencyLog() throws IOException, NoPossiblePathException {
+    public void testAdjacencyLog() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().asLog().build();
         ViterbiImpl instance = new ViterbiImpl(hmm, 3);
         checkLog(instance);
     }
 
     @Test
-    public void testMatrixRegular() throws IOException, NoPossiblePathException {
+    public void testMatrixRegular() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).build();
         ViterbiImpl instance = new ViterbiImpl(hmm, 3);
         checkRegular(instance);
     }
 
     @Test
-    public void testMatrixLog() throws IOException, NoPossiblePathException {
+    public void testMatrixLog() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).asLog().build();
         ViterbiImpl instance = new ViterbiImpl(hmm, 3);
         checkLog(instance);
     }
 
 
-    public void checkRegular(ViterbiImpl instance) throws NoPossiblePathException {
-        ViterbiResult result = instance.getPath(input);
+    public void checkRegular(ViterbiImpl instance) {
+        Result<int[]> result = instance.apply(input);
         assertArrayEquals(expected, result.path);
         for (int i = 0; i < 3; i++) {
             assertArrayEquals(expectedPHI[i], instance.PHI[i], 1e-10);
@@ -64,8 +64,8 @@ public class ViterbiTest {
         }
     }
 
-    public void checkLog(ViterbiImpl instance) throws NoPossiblePathException {
-        ViterbiResult result = instance.getPath(input);
+    public void checkLog(ViterbiImpl instance) {
+        Result<int[]> result = instance.apply(input);
         assertArrayEquals(expected, result.path);
         for (int i = 0; i < 3; i++) {
             assertArrayEquals(expectedLogPHI[i], instance.PHI[i], 1e-10);

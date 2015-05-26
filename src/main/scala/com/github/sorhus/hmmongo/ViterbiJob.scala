@@ -7,11 +7,10 @@ class ViterbiJob(args: Args) extends Job(args) {
 
   val hmm: HMM = new HMMBuilder().fromFiles(args("pi"), args("A"), args("B"))
     .adjacency().asLog().build()
-  val encoder = new DNAEncoder(args.boolean("input-capitals"))
-  val viterbi: Viterbi = new Viterbi(hmm, args("T").toInt, args.boolean("experimental"))
+  val viterbi: Viterbi[String, Array[Int]] = new ViterbiBuilder(hmm, args("T").toInt, true)
+    .withEncoder(new DNAEncoder(args.boolean("capitals")))
 
   TypedPipe.from(TextLine(args("input")))
-    .flatMap(encoder)
-    .flatMap(viterbi)
+    .map(viterbi.apply)
     .write(TypedTsv(args("output")))
 }

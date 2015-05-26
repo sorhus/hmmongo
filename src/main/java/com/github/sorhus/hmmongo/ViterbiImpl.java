@@ -1,6 +1,6 @@
 package com.github.sorhus.hmmongo;
 
-public class ViterbiImpl implements IViterbi {
+public class ViterbiImpl implements Viterbi<int[], int[]> {
 
     final HMM hmm;
     final double[][] PHI;
@@ -16,7 +16,8 @@ public class ViterbiImpl implements IViterbi {
         }
     }
 
-    public ViterbiResult getPath(int[] observations) throws NoPossiblePathException {
+    @Override
+    public Result<int[]> apply(int[] observations) {
         initialise(observations[0]);
         recurse(observations);
         return terminate(observations.length);
@@ -57,7 +58,7 @@ public class ViterbiImpl implements IViterbi {
         }
     }
 
-    protected ViterbiResult terminate(int observations) throws NoPossiblePathException {
+    protected Result<int[]> terminate(int observations) {
         int path[] = new int[observations];
         double max = Double.NEGATIVE_INFINITY;
         for(int i = 0; i < hmm.n; i++) {
@@ -68,10 +69,11 @@ public class ViterbiImpl implements IViterbi {
         }
         for(int t = observations - 2; t > -1; t--) {
             if(path[t + 1] < 0) {
-                throw new NoPossiblePathException();
+                return Result.NO_PATH;
             }
             path[t] = PSI[t + 1][path[t + 1]];
         }
-        return new ViterbiResult(path, max);
+        return new Result<>(path, max);
     }
+
 }

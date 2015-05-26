@@ -2,7 +2,7 @@ package com.github.sorhus.hmmongo;
 
 import java.util.function.DoubleBinaryOperator;
 
-public class ExperimentalViterbiImpl implements IViterbi {
+public class ExperimentalViterbiImpl implements Viterbi<int[], int[]> {
 
     final HMM hmm;
     final double[][] PHI;
@@ -11,7 +11,7 @@ public class ExperimentalViterbiImpl implements IViterbi {
     final double min;
     final DoubleBinaryOperator op;
 
-    public ExperimentalViterbiImpl(final HMM hmm, int T) {
+    public ExperimentalViterbiImpl(final HMM hmm, final int T) {
         this.hmm = hmm;
         this.PHI = new double[T][];
         this.PSI = new int[T][];
@@ -23,7 +23,11 @@ public class ExperimentalViterbiImpl implements IViterbi {
         this.op = (d1, d2) -> hmm.log ? d1 + d2 : d1 * d2;
     }
 
-    public ViterbiResult getPath(int[] observations) throws NoPossiblePathException {
+    @Override
+    public Result<int[]> apply(int[] observations) {
+        if(observations.length == 0) {
+            return Result.NO_PATH;
+        }
         initialise(observations[0]);
         recurse(observations);
         return terminate(observations.length);
@@ -53,7 +57,7 @@ public class ExperimentalViterbiImpl implements IViterbi {
         }
     }
 
-    protected ViterbiResult terminate(int observations) throws NoPossiblePathException {
+    protected Result<int[]> terminate(int observations) {
         int path[] = new int[observations];
         double max = min;
         for(int i = 0; i < hmm.n; i++) {
@@ -64,11 +68,11 @@ public class ExperimentalViterbiImpl implements IViterbi {
         }
         for(int t = observations - 2; t > -1; t--) {
             if(path[t + 1] < 0) {
-                throw new NoPossiblePathException();
+                return Result.NO_PATH;
             }
             path[t] = PSI[t + 1][path[t + 1]];
         }
-        return new ViterbiResult(path, max);
+        return new Result<>(path, max);
     }
 
 }

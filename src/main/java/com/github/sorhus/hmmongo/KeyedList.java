@@ -17,7 +17,6 @@ public class KeyedList extends ArrayList<Double> implements Keyed {
             public boolean hasNext() {
                 return i < size();
             }
-
             @Override
             public Integer next() {
                 return i++;

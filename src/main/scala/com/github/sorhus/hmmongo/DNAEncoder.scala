@@ -2,23 +2,21 @@ package com.github.sorhus.hmmongo
 
 import scala.util.{Failure, Success, Try}
 
-class DNAEncoder(capitals: Boolean = false) extends Function[String, List[Array[Int]]] {
+class DNAEncoder(capitals: Boolean = false) extends Encoder[String] {
 
-  override def apply(input: String): List[Array[Int]] = {
+  def apply(input: String): Array[Int] = {
     Try(input.toCharArray.map(encode)) match {
-      case Success(result) => result :: Nil
-      case Failure(error) => Nil
+      case Success(result) => result
+      case Failure(error) => Array.empty
     }
   }
 
-  def encode(input: Char): Int = {
-    val ch = if(capitals) input.toLower else input
-    ch match {
-      case 'a' => 0
-      case 'c' => 1
-      case 'g' => 2
-      case 't' => 3
-      case  _  => throw new IllegalArgumentException
-    }
+  def encode(ch: Char): Int = ch match {
+    case 'a' | 'A' => 0
+    case 'c' | 'C' => 1
+    case 'g' | 'G' => 2
+    case 't' | 'T' => 3
+    case  _  => throw new IllegalArgumentException
   }
+
 }
