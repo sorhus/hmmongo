@@ -2,7 +2,7 @@ package com.github.sorhus.hmmongo
 
 import scala.util.{Failure, Success, Try}
 
-class DNAEncoder(capitals: Boolean = false) extends Encoder[String] {
+class DNAEncoder extends Encoder[String] {
 
   def apply(input: String): Array[Int] = {
     Try(input.toCharArray.map(encode)) match {
