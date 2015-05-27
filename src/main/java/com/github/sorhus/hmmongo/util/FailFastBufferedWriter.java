@@ -19,6 +19,7 @@ public class FailFastBufferedWriter implements AutoCloseable {
     public void write(String line) {
         try {
             bw.write(line);
+            bw.newLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

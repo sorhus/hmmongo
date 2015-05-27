@@ -12,7 +12,7 @@ public class Result<O> {
 
     @Override
     public String toString() {
-        return path.toString() + "\t" + Double.toString(likelihood) + "\n";
+        return path.toString() + "\t" + Double.toString(likelihood);
     }
 
     final static Result<int[]> NO_PATH = new Result<>(null, Double.NaN);
