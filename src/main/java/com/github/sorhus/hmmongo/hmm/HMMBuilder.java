@@ -1,4 +1,4 @@
-package com.github.sorhus.hmmongo;
+package com.github.sorhus.hmmongo.hmm;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

@@ -1,4 +1,6 @@
-package com.github.sorhus.hmmongo;
+package com.github.sorhus.hmmongo.viterbi;
+
+import com.github.sorhus.hmmongo.hmm.HMM;
 
 public class MaybeFasterViterbiImpl implements Viterbi<int[], int[]> {
 

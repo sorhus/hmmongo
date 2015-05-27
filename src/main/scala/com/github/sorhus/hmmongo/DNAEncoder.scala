@@ -1,5 +1,7 @@
 package com.github.sorhus.hmmongo
 
+import com.github.sorhus.hmmongo.viterbi.Encoder
+
 import scala.util.{Failure, Success, Try}
 
 class DNAEncoder extends Encoder[String] {

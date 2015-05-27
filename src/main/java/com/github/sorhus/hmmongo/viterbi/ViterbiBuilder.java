@@ -1,4 +1,6 @@
-package com.github.sorhus.hmmongo;
+package com.github.sorhus.hmmongo.viterbi;
+
+import com.github.sorhus.hmmongo.hmm.HMM;
 
 public class ViterbiBuilder {
 
@@ -12,19 +14,19 @@ public class ViterbiBuilder {
         this.impl = experiment ? new MaybeFasterViterbiImpl(hmm, T) : new ViterbiImpl(hmm, T);
     }
 
-    Viterbi<int[], int[]> build() {
+    public Viterbi<int[], int[]> build() {
         return impl;
     }
 
-    <I, O> Viterbi<I, O> withEncoderDecoder(Encoder<I> encoder, Decoder<O> decoder) {
+    public  <I, O> Viterbi<I, O> withEncoderDecoder(Encoder<I> encoder, Decoder<O> decoder) {
         return new ViterbiDecoder<>(new ViterbiEncoder<>(encoder), decoder);
     }
 
-    <I> Viterbi<I, int[]> withEncoder(Encoder<I> encoder) {
+    public <I> Viterbi<I, int[]> withEncoder(Encoder<I> encoder) {
         return withEncoderDecoder(encoder, t -> t);
     }
 
-    <O> Viterbi<int[], O> withDecoder(Decoder<O> decoder) {
+    public <O> Viterbi<int[], O> withDecoder(Decoder<O> decoder) {
         return withEncoderDecoder(t -> t, decoder);
     }
 
