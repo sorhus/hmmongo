@@ -34,9 +34,9 @@ public class ViterbiTest {
     @Test
     public void testAdjacencyLog() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().build();
-        ResultFactory<int[],int[],BasicResult<int[],int[]>> resultFactory =
+        ResultFactory<int[],int[],BasicResult<int[]>> resultFactory =
                 new BasicResultFactory<>((i) -> i, (i) -> i);
-        ViterbiImpl<int[],int[],BasicResult<int[],int[]>> instance =
+        ViterbiImpl<int[],int[],BasicResult<int[]>> instance =
                 new ViterbiImpl<>(hmm, 3, (i) -> i, resultFactory);
         check(instance);
     }
@@ -44,15 +44,15 @@ public class ViterbiTest {
     @Test
     public void testMatrixLog() throws IOException {
         HMM hmm = new HMMBuilder().fromArrays(pi, A, B).build();
-        ResultFactory<int[],int[],BasicResult<int[],int[]>> resultFactory =
+        ResultFactory<int[],int[],BasicResult<int[]>> resultFactory =
                 new BasicResultFactory<>((i) -> i, (i) -> i);
-        ViterbiImpl<int[],int[],BasicResult<int[],int[]>> instance =
+        ViterbiImpl<int[],int[],BasicResult<int[]>> instance =
                 new ViterbiImpl<>(hmm, 3, (i) -> i, resultFactory);
         check(instance);
     }
 
-    public void check(ViterbiImpl<int[], int[],BasicResult<int[],int[]>> instance) {
-        BasicResult<int[], int[]> result = instance.apply(input);
+    public void check(ViterbiImpl<int[],int[],BasicResult<int[]>> instance) {
+        BasicResult<int[]> result = instance.apply(input);
         assertArrayEquals(expected, result.path);
         for (int i = 0; i < 3; i++) {
             assertArrayEquals(expectedLogPHI[i], instance.PHI[i], 1e-10);

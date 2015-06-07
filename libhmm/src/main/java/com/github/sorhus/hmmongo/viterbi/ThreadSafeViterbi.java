@@ -2,11 +2,11 @@ package com.github.sorhus.hmmongo.viterbi;
 
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 
-public class ThreadSafeViterbi<I,O,R extends Result<I,O>> implements Viterbi<I,O,R> {
+public class ThreadSafeViterbi<I,R extends Result> implements Viterbi<I,R> {
 
-    private final Viterbi<I,O,R> impl;
+    private final Viterbi<I,R> impl;
 
-    public ThreadSafeViterbi(Viterbi<I,O,R> impl) {
+    public ThreadSafeViterbi(Viterbi<I,R> impl) {
         this.impl = impl;
     }
 

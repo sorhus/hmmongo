@@ -4,7 +4,7 @@ import com.github.sorhus.hmmongo.hmm.HMM;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
 
-public class ViterbiImpl<I,O,R extends Result<I,O>> implements Viterbi<I,O,R> {
+public class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
 
     final HMM hmm;
     final double[][] PHI;

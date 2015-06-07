@@ -1,9 +1,6 @@
 package com.github.sorhus.hmmongo.hmm;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +9,7 @@ import java.util.zip.GZIPInputStream;
 
 public class HMMBuilder {
 
-    private String piPath, APath, BPath;
+    private InputStream piIS, AIS, BIS;
     private double[] pi;
     private double[][] rawA, B;
     private boolean inLog = false;
@@ -21,14 +18,21 @@ public class HMMBuilder {
 
     public HMMBuilder() {}
 
-    public HMMBuilder fromFiles(String piPath, String APath, String BPath) {
+    public HMMBuilder fromInputStreams(InputStream piIS, InputStream AIS, InputStream BIS) {
+        this.piIS = piIS;
+        this.AIS = AIS;
+        this.BIS = BIS;
+        return this;
+    }
+
+    public HMMBuilder fromFiles(String piPath, String APath, String BPath) throws FileNotFoundException {
         return fromFiles(piPath, APath, BPath, false);
     }
 
-    public HMMBuilder fromFiles(String piPath, String APath, String BPath, boolean log) {
-        this.piPath = piPath;
-        this.APath = APath;
-        this.BPath = BPath;
+    public HMMBuilder fromFiles(String piPath, String APath, String BPath, boolean log) throws FileNotFoundException {
+        this.piIS = new FileInputStream(piPath);
+        this.AIS = new FileInputStream(APath);
+        this.BIS = new FileInputStream(BPath);
         this.inLog = log;
         return this;
     }
@@ -59,21 +63,21 @@ public class HMMBuilder {
             A = transfromA(rawA);
             B = transfromB(B);
         } else {
-            try(Scanner sc = getScanner(piPath)) {
+            try(Scanner sc = getScanner(piIS)) {
                 pi = readArray(sc);
             }
-            try(Scanner sc = getScanner(APath)) {
+            try(Scanner sc = getScanner(AIS)) {
                 A = readA(sc, pi.length);
             }
-            try(Scanner sc = getScanner(BPath)) {
+            try(Scanner sc = getScanner(BIS)) {
                 B = readB(sc, pi.length);
             }
         }
         return new HMM(pi, A, B);
     }
 
-    private Scanner getScanner(String path) throws IOException {
-        return new Scanner(new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(path)))));
+    private Scanner getScanner(InputStream is) throws IOException {
+        return new Scanner(new BufferedReader(new InputStreamReader(new GZIPInputStream(is))));
     }
 
     private double[] readArray(Scanner sc, int n) throws IOException {

@@ -6,7 +6,7 @@ import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
 
 import java.lang.reflect.Constructor;
 
-public class ViterbiBuilder<I,O,R extends Result<I,O>> {
+public class ViterbiBuilder<I,O,R extends Result> {
 
     private HMM hmm;
     private int T;
@@ -16,14 +16,18 @@ public class ViterbiBuilder<I,O,R extends Result<I,O>> {
     private PathDecoder<O> pathDecoder;
     private String resultFactoryClass;
 
-    public Viterbi<I,O,R> build()  {
+    private boolean timeLogging;
+
+    public Viterbi<I,R> build()  {
         try {
             @SuppressWarnings("unchecked") // Will throw exception on
             Class<ResultFactory<I,O,R>> clazz = (Class<ResultFactory<I,O,R>>) Class.forName(resultFactoryClass);
             Constructor<ResultFactory<I,O,R>> cons = clazz.getConstructor(ObservationDecoder.class, PathDecoder.class);
             ResultFactory<I,O,R> resultFactory = cons.newInstance(observationDecoder, pathDecoder);
-            Viterbi<I,O,R> impl = new ViterbiImpl<>(hmm, T, observationEncoder, resultFactory);
-            return threadSafe ? new ThreadSafeViterbi<>(impl) : impl;
+            Viterbi<I,R> viterbi = new ViterbiImpl<>(hmm, T, observationEncoder, resultFactory);
+            viterbi = timeLogging ? new TimeLoggingViterbi(viterbi) : viterbi;
+            viterbi = threadSafe ? new ThreadSafeViterbi<>(viterbi) : viterbi;
+            return viterbi;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +43,7 @@ public class ViterbiBuilder<I,O,R extends Result<I,O>> {
         return this;
     }
 
-    public ViterbiBuilder<I,O,R> threadSafe() {
+    public ViterbiBuilder<I,O,R> withThreadSafety() {
         threadSafe = true;
         return this;
     }
@@ -61,6 +65,11 @@ public class ViterbiBuilder<I,O,R extends Result<I,O>> {
 
     public ViterbiBuilder<I,O,R> withResultFactoryClass(String resultFactoryClass) {
         this.resultFactoryClass = resultFactoryClass;
+        return this;
+    }
+
+    public ViterbiBuilder<I,O,R> withTimeLogging() {
+        this.timeLogging = true;
         return this;
     }
 }

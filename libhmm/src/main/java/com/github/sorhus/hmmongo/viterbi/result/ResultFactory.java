@@ -3,7 +3,7 @@ package com.github.sorhus.hmmongo.viterbi.result;
 import com.github.sorhus.hmmongo.viterbi.ObservationDecoder;
 import com.github.sorhus.hmmongo.viterbi.PathDecoder;
 
-public abstract class ResultFactory<I,O,R extends Result<I,O>> {
+public abstract class ResultFactory<I,O,R extends Result> {
 
     protected final ObservationDecoder<I> encoder;
     protected final PathDecoder<O> decoder;

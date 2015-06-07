@@ -1,6 +1,6 @@
 package com.github.sorhus.hmmongo.viterbi.result;
 
-public class BasicResult<I,O> implements Result<I,O> {
+public class BasicResult<O> implements Result {
 
     public final O path;
     public final double likelihood;
@@ -12,6 +12,6 @@ public class BasicResult<I,O> implements Result<I,O> {
 
     @Override
     public String toString() {
-        return path.toString() + ":" + Double.toString(likelihood);
+        return path.toString() + ":" + Double.toString(likelihood) + "\n";
     }
 }

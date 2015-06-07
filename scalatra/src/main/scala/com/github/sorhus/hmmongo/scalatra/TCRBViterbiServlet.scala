@@ -1,7 +1,9 @@
 package com.github.sorhus.hmmongo.scalatra
 
+import java.io.InputStream
+
 import _root_.akka.actor.ActorSystem
-import com.github.sorhus.hmmongo.viterbi.result.{FullResult, Result, BasicResult}
+import com.github.sorhus.hmmongo.viterbi.result.{FullResult, Result}
 import com.github.sorhus.hmmongo.viterbi._
 import com.github.sorhus.hmmongo.hmm.{HMMBuilder, HMM}
 import org.scalatra._
@@ -11,15 +13,15 @@ import scala.util.Random
 
 class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with ScalateSupport */with FutureSupport {
 
-  val base = "scalatra/src/main/resources"
-  val concurrency = 2
+  val concurrency = 4
   //  val hmm: HMM = new HMMBuilder().fromFiles(s"$base/tcrb_pi.gz", s"$base/tcrb_A.gz", s"$base/tcrb_B.gz")
+  val r: (String) => InputStream = getClass.getResourceAsStream
   val hmm: HMM = new HMMBuilder()
-    .fromFiles(s"$base/example_pi.gz", s"$base/example_A.gz", s"$base/example_B.gz")
+    .fromInputStreams(r("/example_pi.gz"), r("/example_A.gz"), r("/example_B.gz"))
     .adjacency
     .build
 
-  val viterbiPool: Array[Viterbi[String, String, FullResult[String, String]]] =
+  val viterbiPool: Array[Viterbi[String, FullResult[String, String]]] =
     Range(0,concurrency).toArray.map { _ =>
       new ViterbiBuilder[String,String,FullResult[String,String]]()
         .withHMM(hmm)
@@ -28,7 +30,8 @@ class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with Sca
         .withObservationDecoder(new DNADecoder)
         .withPathDecoder(new StringDecoder)
         .withResultFactoryClass("com.github.sorhus.hmmongo.viterbi.result.FullResultFactory")
-        .threadSafe
+        .withThreadSafety()
+//        .withTimeLogging()
         .build
   }
 
@@ -36,7 +39,7 @@ class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with Sca
 
   get("/:dna") {
     new AsyncResult {
-      val is: Future[Result[String,String]] = Future {
+      val is: Future[Result] = Future {
         viterbiPool(Random.nextInt(concurrency))(params("dna"))
       }
     }

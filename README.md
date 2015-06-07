@@ -3,6 +3,13 @@ Given a Hidden Markov Model and a bunch of observation sequences, compute the mo
 ### Build it
 * `mvn clean package`
 
+### Run the server 
+* `java -jar scalatra/target/scalatra-0.2.0.jar
+* `curl localhost:8080/acgttgcatcgatcgatcgatcgatcgtacgatcgatcgaacgatgcgactaca`
+
+
+The following documentation is for version 0.1.0.
+
 ### Run the regular java app
 * `java -cp target/hmmongo-0.1.0.jar com.github.sorhus.hmmongo.DNAViterbiApp src/main/resources/example_pi.gz src/main/resources/example_A.gz src/main/resources/example_B.gz 41 src/main/resources/example_input output`
 

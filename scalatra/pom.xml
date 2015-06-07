@@ -68,7 +68,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.sorhus.hmmongo.JettyLauncher</mainClass>
+                            <mainClass>com.github.sorhus.hmmongo.scalatra.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

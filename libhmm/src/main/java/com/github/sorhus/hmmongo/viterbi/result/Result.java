@@ -1,3 +1,3 @@
 package com.github.sorhus.hmmongo.viterbi.result;
 
-public interface Result<I,O> {}
+public interface Result {}

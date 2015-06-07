@@ -28,8 +28,8 @@ public class DNAViterbiApp {
                 .fromFiles(args[0], args[1], args[2])
                 .adjacency()
                 .build();
-        Viterbi<String,String,FullResult<String,String>> viterbi =
-                new ViterbiBuilder<String,String,FullResult<String,String>>()
+        Viterbi<String,FullResult> viterbi =
+                new ViterbiBuilder<String,String,FullResult>()
             .withHMM(hmm)
             .withMaxObservationLength(Integer.parseInt(args[3]))
             .withObservationEncoder(new DNAEncoder())

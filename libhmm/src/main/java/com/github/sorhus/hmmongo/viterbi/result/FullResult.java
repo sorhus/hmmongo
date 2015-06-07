@@ -1,6 +1,6 @@
 package com.github.sorhus.hmmongo.viterbi.result;
 
-public class FullResult<I, O> extends BasicResult<I,O> {
+public class FullResult<I,O> extends BasicResult<O> {
 
     final I input;
 
