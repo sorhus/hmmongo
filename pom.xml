@@ -8,9 +8,10 @@
     <artifactId>hmmongo</artifactId>
     <version>0.1.0</version>
     <modules>
-        <module>hmmongo-libhmm</module>
-        <module>hmmongo-server</module>
-        <module>hmmongo-hadoop</module>
+        <module>libhmm</module>
+        <module>scalatra</module>
+        <module>hadoop</module>
+        <module>httpcore</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -79,6 +80,16 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-webapp</artifactId>
                 <version>9.0.4.v20130625</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.4.1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
