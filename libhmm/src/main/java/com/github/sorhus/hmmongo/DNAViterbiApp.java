@@ -5,6 +5,7 @@ import com.github.sorhus.hmmongo.hmm.HMMBuilder;
 import com.github.sorhus.hmmongo.util.FailFastBufferedWriter;
 import com.github.sorhus.hmmongo.viterbi.*;
 import com.github.sorhus.hmmongo.viterbi.result.BasicResult;
+import com.github.sorhus.hmmongo.viterbi.result.FullResult;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 
 import java.io.BufferedReader;
@@ -27,7 +28,8 @@ public class DNAViterbiApp {
                 .fromFiles(args[0], args[1], args[2])
                 .adjacency()
                 .build();
-        Viterbi<String,String> viterbi = new ViterbiBuilder<String,String>()
+        Viterbi<String,String,FullResult<String,String>> viterbi =
+                new ViterbiBuilder<String,String,FullResult<String,String>>()
             .withHMM(hmm)
             .withMaxObservationLength(Integer.parseInt(args[3]))
             .withObservationEncoder(new DNAEncoder())

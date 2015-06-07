@@ -4,15 +4,15 @@ import com.github.sorhus.hmmongo.hmm.HMM;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
 
-public class ViterbiImpl<I,O> implements Viterbi<I, O> {
+public class ViterbiImpl<I,O,R extends Result<I,O>> implements Viterbi<I,O,R> {
 
     final HMM hmm;
     final double[][] PHI;
     final int[][] PSI;
     final ObservationEncoder<I> encoder;
-    final ResultFactory<I,O> resultFactory;
+    final ResultFactory<I,O,R> resultFactory;
 
-    public ViterbiImpl(HMM hmm, int T, ObservationEncoder<I> encoder, ResultFactory<I, O> resultFactory) {
+    public ViterbiImpl(HMM hmm, int T, ObservationEncoder<I> encoder, ResultFactory<I,O,R> resultFactory) {
         this.hmm = hmm;
         this.PHI = new double[T][];
         this.PSI = new int[T][];
@@ -25,7 +25,7 @@ public class ViterbiImpl<I,O> implements Viterbi<I, O> {
     }
 
     @Override
-    public Result<I,O> apply(I input) {
+    public R apply(I input) {
         int[] observations = encoder.apply(input);
         initialise(observations[0]);
         recurse(observations);
@@ -58,7 +58,7 @@ public class ViterbiImpl<I,O> implements Viterbi<I, O> {
         }
     }
 
-    protected Result<I,O> terminate(int[] observations) {
+    protected R terminate(int[] observations) {
         int T = observations.length;
         int path[] = new int[T];
         double max = Double.NEGATIVE_INFINITY;
@@ -70,7 +70,7 @@ public class ViterbiImpl<I,O> implements Viterbi<I, O> {
         }
         for(int t = T - 2; t > -1; t--) {
             if(path[t + 1] < 0) {
-                return resultFactory.NO_PATH;
+                return resultFactory.noPath();
             }
             path[t] = PSI[t + 1][path[t + 1]];
         }

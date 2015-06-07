@@ -1,11 +1,12 @@
 package com.github.sorhus.hmmongo.viterbi;
 
 import com.github.sorhus.hmmongo.hmm.HMM;
+import com.github.sorhus.hmmongo.viterbi.result.Result;
 import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
 
 import java.lang.reflect.Constructor;
 
-public class ViterbiBuilder<I,O> {
+public class ViterbiBuilder<I,O,R extends Result<I,O>> {
 
     private HMM hmm;
     private int T;
@@ -15,50 +16,50 @@ public class ViterbiBuilder<I,O> {
     private PathDecoder<O> pathDecoder;
     private String resultFactoryClass;
 
-    public Viterbi<I,O> build()  {
+    public Viterbi<I,O,R> build()  {
         try {
             @SuppressWarnings("unchecked") // Will throw exception on
-            Class<ResultFactory<I, O>> clazz = (Class<ResultFactory<I, O>>) Class.forName(resultFactoryClass);
-            Constructor<ResultFactory<I, O>> cons = clazz.getConstructor(ObservationDecoder.class, PathDecoder.class);
-            ResultFactory<I, O> resultFactory = cons.newInstance(observationDecoder, pathDecoder);
-            Viterbi<I, O> impl = new ViterbiImpl<>(hmm, T, observationEncoder, resultFactory);
+            Class<ResultFactory<I,O,R>> clazz = (Class<ResultFactory<I,O,R>>) Class.forName(resultFactoryClass);
+            Constructor<ResultFactory<I,O,R>> cons = clazz.getConstructor(ObservationDecoder.class, PathDecoder.class);
+            ResultFactory<I,O,R> resultFactory = cons.newInstance(observationDecoder, pathDecoder);
+            Viterbi<I,O,R> impl = new ViterbiImpl<>(hmm, T, observationEncoder, resultFactory);
             return threadSafe ? new ThreadSafeViterbi<>(impl) : impl;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public ViterbiBuilder<I,O> withHMM(HMM hmm) {
+    public ViterbiBuilder<I,O,R> withHMM(HMM hmm) {
         this.hmm = hmm;
         return this;
     }
 
-    public ViterbiBuilder<I,O> withMaxObservationLength(int T) {
+    public ViterbiBuilder<I,O,R> withMaxObservationLength(int T) {
         this.T = T;
         return this;
     }
 
-    public ViterbiBuilder<I,O> threadSafe() {
+    public ViterbiBuilder<I,O,R> threadSafe() {
         threadSafe = true;
         return this;
     }
 
-    public ViterbiBuilder<I,O> withObservationEncoder(ObservationEncoder<I> observationEncoder) {
+    public ViterbiBuilder<I,O,R> withObservationEncoder(ObservationEncoder<I> observationEncoder) {
         this.observationEncoder = observationEncoder;
         return this;
     }
 
-    public ViterbiBuilder<I,O> withObservationDecoder(ObservationDecoder<I> observationDecoder) {
+    public ViterbiBuilder<I,O,R> withObservationDecoder(ObservationDecoder<I> observationDecoder) {
         this.observationDecoder = observationDecoder;
         return this;
     }
 
-    public ViterbiBuilder<I,O> withPathDecoder(PathDecoder<O> pathDecoder) {
+    public ViterbiBuilder<I,O,R> withPathDecoder(PathDecoder<O> pathDecoder) {
         this.pathDecoder = pathDecoder;
         return this;
     }
 
-    public ViterbiBuilder<I,O> withResultFactoryClass(String resultFactoryClass) {
+    public ViterbiBuilder<I,O,R> withResultFactoryClass(String resultFactoryClass) {
         this.resultFactoryClass = resultFactoryClass;
         return this;
     }

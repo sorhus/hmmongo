@@ -1,7 +1,7 @@
 package com.github.sorhus.hmmongo.scalatra
 
 import _root_.akka.actor.ActorSystem
-import com.github.sorhus.hmmongo.viterbi.result.{Result, BasicResult}
+import com.github.sorhus.hmmongo.viterbi.result.{FullResult, Result, BasicResult}
 import com.github.sorhus.hmmongo.viterbi._
 import com.github.sorhus.hmmongo.hmm.{HMMBuilder, HMM}
 import org.scalatra._
@@ -19,8 +19,9 @@ class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with Sca
     .adjacency
     .build
 
-  val viterbiPool: Array[Viterbi[String, String]] = Range(0,concurrency).toArray.map { _ =>
-      new ViterbiBuilder[String,String]()
+  val viterbiPool: Array[Viterbi[String, String, FullResult[String, String]]] =
+    Range(0,concurrency).toArray.map { _ =>
+      new ViterbiBuilder[String,String,FullResult[String,String]]()
         .withHMM(hmm)
         .withMaxObservationLength(101)
         .withObservationEncoder(new DNAEncoder)
