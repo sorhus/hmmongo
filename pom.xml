@@ -12,6 +12,7 @@
         <module>scalatra</module>
         <module>hadoop</module>
         <module>httpcore</module>
+        <module>thrift</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -90,6 +91,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>4.4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>0.9.1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
