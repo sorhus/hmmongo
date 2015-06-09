@@ -1,16 +1,15 @@
 import _root_.akka.actor.ActorSystem
 import javax.servlet.ServletContext
-import com.github.sorhus.hmmongo.scalatra.TCRBViterbiServlet
+import com.github.sorhus.hmmongo.scalatra.DNAViterbiServlet
 import org.scalatra.LifeCycle
 
 class ScalatraBootstrap extends LifeCycle {
 
   val system = ActorSystem()
-//  val myActor = system.actorOf(Props[MyActor])
 
   override def init(context: ServletContext) {
-//    context.mount(new TCRBViterbiServlet(system), "/*")
-    context.mount(new TCRBViterbiServlet(system), "/")
+    val Array(pi,a,b,t) = Array("pi","A","B","T").map(context.getAttribute).map(_.toString)
+    context.mount(new DNAViterbiServlet(pi, a, b, t.toInt, system), "/")
   }
 
   override def destroy(context:ServletContext) {

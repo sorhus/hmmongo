@@ -4,12 +4,13 @@ import com.github.sorhus.hmmongo.hmm.HMM;
 import com.github.sorhus.hmmongo.hmm.HMMBuilder;
 import com.github.sorhus.hmmongo.util.FailFastBufferedWriter;
 import com.github.sorhus.hmmongo.viterbi.*;
-import com.github.sorhus.hmmongo.viterbi.result.BasicResult;
 import com.github.sorhus.hmmongo.viterbi.result.FullResult;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.util.function.Function;
 
 public class DNAViterbiApp {
 
@@ -24,18 +25,19 @@ public class DNAViterbiApp {
      */
     public static void main(String[] args) throws Exception {
 
+        Function<String, InputStream> r = DNAViterbiApp.class::getResourceAsStream;
         HMM hmm = new HMMBuilder()
-                .fromFiles(args[0], args[1], args[2])
-                .adjacency()
-                .build();
+            .fromInputStreams(r.apply(args[0]), r.apply(args[1]), r.apply(args[2]))
+            .adjacency()
+            .build();
         Viterbi<String,FullResult> viterbi =
-                new ViterbiBuilder<String,String,FullResult>()
+            new ViterbiBuilder<String,String,FullResult>()
             .withHMM(hmm)
             .withMaxObservationLength(Integer.parseInt(args[3]))
             .withObservationEncoder(new DNAEncoder())
             .withObservationDecoder(new DNADecoder())
             .withPathDecoder(new StringDecoder())
-            .withResultFactoryClass("com.github.sorhus.hmmongo.result.FullResultFactory")
+            .withResultFactoryClass("com.github.sorhus.hmmongo.viterbi.result.FullResultFactory")
             .build();
 
         try(FailFastBufferedWriter writer = new FailFastBufferedWriter(args[5])) {

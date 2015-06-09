@@ -11,13 +11,14 @@ import org.scalatra.scalate.ScalateSupport
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.Random
 
-class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with ScalateSupport */with FutureSupport {
+class DNAViterbiServlet(pi: String, A: String, B: String, T: Int, system: ActorSystem)
+    extends ScalatraServlet /*with ScalateSupport */with FutureSupport {
 
   val concurrency = 4
   //  val hmm: HMM = new HMMBuilder().fromFiles(s"$base/tcrb_pi.gz", s"$base/tcrb_A.gz", s"$base/tcrb_B.gz")
   val r: (String) => InputStream = getClass.getResourceAsStream
   val hmm: HMM = new HMMBuilder()
-    .fromInputStreams(r("/example_pi.gz"), r("/example_A.gz"), r("/example_B.gz"))
+    .fromInputStreams(r(pi), r(A), r(B))
     .adjacency
     .build
 
@@ -25,7 +26,7 @@ class TCRBViterbiServlet(system: ActorSystem) extends ScalatraServlet /*with Sca
     Range(0,concurrency).toArray.map { _ =>
       new ViterbiBuilder[String,String,FullResult[String,String]]()
         .withHMM(hmm)
-        .withMaxObservationLength(101)
+        .withMaxObservationLength(T)
         .withObservationEncoder(new DNAEncoder)
         .withObservationDecoder(new DNADecoder)
         .withPathDecoder(new StringDecoder)

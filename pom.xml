@@ -11,7 +11,6 @@
         <module>libhmm</module>
         <module>scalatra</module>
         <module>hadoop</module>
-        <module>httpcore</module>
         <module>thrift</module>
     </modules>
     <packaging>pom</packaging>
