@@ -1,3 +1,7 @@
 .idea
 *.iml
 target
+*/target
+!libhmm/target/
+libhmm/target/*
+!libhmm/target/site/
