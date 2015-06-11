@@ -1,7 +1,6 @@
 package com.github.sorhus.hmmongo;
 
 import com.github.sorhus.hmmongo.hmm.HMM;
-import com.github.sorhus.hmmongo.hmm.HMMBuilder;
 import com.github.sorhus.hmmongo.util.FailFastBufferedWriter;
 import com.github.sorhus.hmmongo.viterbi.*;
 import com.github.sorhus.hmmongo.viterbi.result.FullResult;
@@ -26,12 +25,12 @@ public class DNAViterbiApp {
     public static void main(String[] args) throws Exception {
 
         Function<String, InputStream> r = DNAViterbiApp.class::getResourceAsStream;
-        HMM hmm = new HMMBuilder()
+        HMM hmm = new HMM.Builder()
             .fromInputStreams(r.apply(args[0]), r.apply(args[1]), r.apply(args[2]))
             .adjacency()
             .build();
         Viterbi<String,FullResult> viterbi =
-            new ViterbiBuilder<String,String,FullResult>()
+            new Viterbi.Builder<String,String,FullResult>()
             .withHMM(hmm)
             .withMaxObservationLength(Integer.parseInt(args[3]))
             .withObservationEncoder(new DNAEncoder())

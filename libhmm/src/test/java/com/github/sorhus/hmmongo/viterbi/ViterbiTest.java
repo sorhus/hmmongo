@@ -1,7 +1,6 @@
 package com.github.sorhus.hmmongo.viterbi;
 
 import com.github.sorhus.hmmongo.hmm.HMM;
-import com.github.sorhus.hmmongo.hmm.HMMBuilder;
 import com.github.sorhus.hmmongo.viterbi.result.BasicResult;
 import com.github.sorhus.hmmongo.viterbi.result.BasicResultFactory;
 import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
@@ -33,7 +32,7 @@ public class ViterbiTest {
 
     @Test
     public void testAdjacencyLog() throws IOException {
-        HMM hmm = new HMMBuilder().fromArrays(pi, A, B).adjacency().build();
+        HMM hmm = new HMM.Builder().fromArrays(pi, A, B).adjacency().build();
         ResultFactory<int[],int[],BasicResult<int[]>> resultFactory =
                 new BasicResultFactory<>((i) -> i, (i) -> i);
         ViterbiImpl<int[],int[],BasicResult<int[]>> instance =
@@ -43,7 +42,7 @@ public class ViterbiTest {
 
     @Test
     public void testMatrixLog() throws IOException {
-        HMM hmm = new HMMBuilder().fromArrays(pi, A, B).build();
+        HMM hmm = new HMM.Builder().fromArrays(pi, A, B).build();
         ResultFactory<int[],int[],BasicResult<int[]>> resultFactory =
                 new BasicResultFactory<>((i) -> i, (i) -> i);
         ViterbiImpl<int[],int[],BasicResult<int[]>> instance =

@@ -3,7 +3,7 @@ package com.github.sorhus.hmmongo.hmm;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class KeyedList extends ArrayList<Double> implements Keyed {
+class KeyedList extends ArrayList<Double> implements Keyed {
 
     public KeyedList(int n) {
         super(n);
