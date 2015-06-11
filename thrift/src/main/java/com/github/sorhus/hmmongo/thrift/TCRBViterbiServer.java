@@ -1,7 +1,6 @@
 package com.github.sorhus.hmmongo.thrift;
 
 import com.github.sorhus.hmmongo.hmm.HMM;
-import com.github.sorhus.hmmongo.hmm.HMMBuilder;
 import com.github.sorhus.hmmongo.thrift.DNAViterbiService.Processor;
 import com.github.sorhus.hmmongo.viterbi.*;
 import org.apache.thrift.server.TServer;
@@ -23,12 +22,12 @@ public class TCRBViterbiServer {
         try {
 
             Function<String, InputStream> r = DNAViterbiServiceImpl.class::getResourceAsStream;
-            HMM hmm = new HMMBuilder()
+            HMM hmm = new HMM.Builder()
                 .fromInputStreams(r.apply(args[0]), r.apply(args[1]), r.apply(args[2]))
                 .adjacency()
                 .build();
 
-            Viterbi<String, FullResult> viterbi = new ViterbiBuilder<String, String, FullResult>()
+            Viterbi<String, FullResult> viterbi = new Viterbi.Builder<String, String, FullResult>()
                 .withHMM(hmm)
                 .withMaxObservationLength(Integer.parseInt(args[3]))
                 .withObservationEncoder(new DNAEncoder())

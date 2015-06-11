@@ -4,7 +4,7 @@ import com.github.sorhus.hmmongo.hmm.HMM;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 import com.github.sorhus.hmmongo.viterbi.result.ResultFactory;
 
-public class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
+class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
 
     final HMM hmm;
     final double[][] PHI;
@@ -12,7 +12,7 @@ public class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
     final ObservationEncoder<I> encoder;
     final ResultFactory<I,O,R> resultFactory;
 
-    public ViterbiImpl(HMM hmm, int T, ObservationEncoder<I> encoder, ResultFactory<I,O,R> resultFactory) {
+    ViterbiImpl(HMM hmm, int T, ObservationEncoder<I> encoder, ResultFactory<I,O,R> resultFactory) {
         this.hmm = hmm;
         this.PHI = new double[T][];
         this.PSI = new int[T][];
@@ -32,14 +32,14 @@ public class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
         return terminate(observations);
     }
 
-    protected void initialise(int first) {
+    private void initialise(int first) {
         for(int i = 0; i < hmm.n; i++) {
             PHI[0][i] = hmm.pi[i] + hmm.B[i][first];
             PSI[0][i] = -1;
         }
     }
 
-    protected void recurse(int[] observations) {
+    private void recurse(int[] observations) {
         for(int t = 1; t < observations.length; t++) {
             for(int j = 0; j < hmm.n; j++) {
                 final double b = hmm.B[j][observations[t]];
@@ -58,7 +58,7 @@ public class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
         }
     }
 
-    protected R terminate(int[] observations) {
+    private R terminate(int[] observations) {
         int T = observations.length;
         int path[] = new int[T];
         double max = Double.NEGATIVE_INFINITY;
