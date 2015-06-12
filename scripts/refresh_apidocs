@@ -1,0 +1,12 @@
+# cd into root
+cd $(dirname $0)/..
+
+# remove the old docs
+rm -r com
+rm *.html *.css *.js package-list > /dev/null
+
+# generate the new docs
+mvn javadoc:javadoc
+
+# move the new apidocs to the root
+mv libhmm/target/site/apidocs/* .
