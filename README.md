@@ -7,6 +7,8 @@ The project consists of a few different parts. A generic library and some applic
 * A http server
 * A thrift server
 
+[Documentation for the library (javadocs) can be found here](http://sorhus.github.io/hmmongo)
+
 In libhmm/src/main/resources there is an HMM that models the T-cell receptor.
 
 ### Build it
