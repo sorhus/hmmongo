@@ -8,6 +8,8 @@ import java.lang.reflect.Constructor;
 import java.util.function.Function;
 
 /**
+ * Defines <code>Viterbi</code> as a function from some sequence type
+ * <code>I</code> to some type <code>R</code> that extends <code>Result</code>.
  *
  * @param <I> the type of an observation sequence
  * @param <R> the type of result
@@ -15,6 +17,7 @@ import java.util.function.Function;
 public interface Viterbi<I,R extends Result> extends Function<I,R> {
 
     /**
+     * Builder for constructing an instance of <code>Viterbi</code>
      *
      * @param <I> the type of an observation sequence
      * @param <O> the type of an output sequence
@@ -52,6 +55,10 @@ public interface Viterbi<I,R extends Result> extends Function<I,R> {
             return this;
         }
 
+        /**
+         * The maximum length of any input sequence. The instance of
+         * {@code viterbi} will use memory proportional to T squared.
+         */
         public Builder<I, O, R> withMaxObservationLength(int T) {
             this.T = T;
             return this;
@@ -62,21 +69,34 @@ public interface Viterbi<I,R extends Result> extends Function<I,R> {
             return this;
         }
 
+        /**
+         * Specify which {@code PathEncoder} to use.
+         */
         public Builder<I, O, R> withObservationEncoder(ObservationEncoder<I> observationEncoder) {
             this.observationEncoder = observationEncoder;
             return this;
         }
 
+        /**
+         * Specify which {@code ObservationDecoder} to use.
+         */
         public Builder<I, O, R> withObservationDecoder(ObservationDecoder<I> observationDecoder) {
             this.observationDecoder = observationDecoder;
             return this;
         }
 
+        /**
+         * Specify which {@code PathDecoder} to use.
+         */
         public Builder<I, O, R> withPathDecoder(PathDecoder<O> pathDecoder) {
             this.pathDecoder = pathDecoder;
             return this;
         }
 
+        /**
+         * Specify the fully qualified name of the {@link ResultFactory} to use.
+         * The {@code ResultFactory} will be instantiated with Reflection.
+         */
         public Builder<I, O, R> withResultFactoryClass(String resultFactoryClass) {
             this.resultFactoryClass = resultFactoryClass;
             return this;
