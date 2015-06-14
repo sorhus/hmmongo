@@ -8,29 +8,31 @@ import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Hidden Markov Model defined by the initial distribution,
- * the state transition distributions and the emission distributions.
+ * Hidden Markov Model defined by the initial distribution {@code pi},
+ * the state transition distributions {@code A} and the emission
+ * distributions {@code B}.
  *
- * States and emissions are both encoded as consecutive nonnegative integers.
- * Distributions are either expressed as probabilities or log probabilities
+ * States and emissions are both assumed to be encoded as consecutive
+ * nonnegative integers.
+ * Distributions are expressed as log probabilities
  */
 public class HMM {
 
     /**
      * The initial distribution.
-     * pi[i] is the prior to start in state i.
+     * {@code pi[i]} is the prior to start in state {@code i}.
      */
     final public double[] pi;
 
     /**
      * The state transition distributions.
-     * A.get(j).get(i) is the prior to go from state i to j.
+     * {@code A.get(j).get(i)} is the prior to go from state {@code i} to {@code j}.
      */
     final public List<Keyed> A;
 
     /**
      * The emission distributions
-     * B[i][j] is the prior to emit j when in state i.
+     * {@code B[i][j]} is the prior to emit {@code j} when in state {@code i}.
      */
     final public double[][] B;
 
@@ -59,6 +61,11 @@ public class HMM {
         }
     }
 
+    /**
+     * Builder for constructing an {@code HMM}.
+     * Input is assumed to be in matrix format, either in probabilities
+     * or log probabilities.
+     */
     public static class Builder {
 
         private InputStream piIS, AIS, BIS;
@@ -108,7 +115,10 @@ public class HMM {
             return this;
         }
 
-
+        /**
+         * Indicates that {@code A} should be represented using adjacency
+         * lists rather than a dense matrix.
+         */
         public Builder adjacency() {
             this.adjacency = true;
             return this;
