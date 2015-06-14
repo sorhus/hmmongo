@@ -12,6 +12,6 @@ public class BasicResult<O> implements Result {
 
     @Override
     public String toString() {
-        return path.toString() + ":" + Double.toString(likelihood) + "\n";
+        return path.toString() + ":" + Double.toString(likelihood);
     }
 }

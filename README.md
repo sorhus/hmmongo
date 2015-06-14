@@ -1,20 +1,42 @@
 Given a Hidden Markov Model and a bunch of observation sequences, compute the most likely path for each observation sequence. 
 
-The project consists of a few different parts. A generic library and some applications. The applicatinos are:
+The project consists of a few different parts. A generic library and some applications. The applications are:
 
 * A standalone scala app
 * A hadoop job
 * A http server
 * A thrift server
 
-[Documentation for the library (javadocs) can be found here](http://sorhus.github.io/hmmongo)
+[Javadocs for the library can be found here](http://sorhus.github.io/hmmongo)
 
-In libhmm/src/main/resources there is an HMM that models the T-cell receptor.
+Typical usage of the library looks like this.
+```
+// args = {pi, A, B, T, input, output};
+Function<String, InputStream> r = DNAViterbiApp.class::getResourceAsStream;
+HMM hmm = new HMM.Builder()
+    .fromInputStreams(r.apply(args[0]), r.apply(args[1]), r.apply(args[2]))
+    .adjacency()
+    .build();
+Viterbi<String,FullResult> viterbi =
+    new Viterbi.Builder<String,String,FullResult>()
+    .withHMM(hmm)
+    .withMaxObservationLength(Integer.parseInt(args[3]))
+    .withObservationEncoder(new DNAEncoder())
+    .withObservationDecoder(new DNADecoder())
+    .withPathDecoder(new StringDecoder())
+    .withResultFactoryClass("com.github.sorhus.hmmongo.viterbi.result.FullResultFactory")
+    .build();
+```
 
-### Build it
+The library is written in Java 8.
+Note that the `DNAEncoder`, `DNADecoder` and `StringDecoder` requires scala 2.11 to run.
+
+Also, in libhmm/src/main/resources there is an HMM that models the T-cell receptor.
+
+### Build the project
 * `mvn clean package`
 
-### Run the regular scala app
+### Run the scala app
 * `scala -cp libhmm/target/libhmm-0.3.0.jar com.github.sorhus.hmmongo.DNAViterbiApp /example_pi.gz /example_A.gz /example_B.gz 41 libhmm/src/main/resources/example_input output`
 
 ### Run the http server

@@ -1,25 +1,28 @@
 package com.github.sorhus.hmmongo;
 
 import com.github.sorhus.hmmongo.hmm.HMM;
-import com.github.sorhus.hmmongo.util.FailFastBufferedWriter;
 import com.github.sorhus.hmmongo.viterbi.*;
 import com.github.sorhus.hmmongo.viterbi.result.FullResult;
 import com.github.sorhus.hmmongo.viterbi.result.Result;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
+import java.io.*;
 import java.util.function.Function;
 
 public class DNAViterbiApp {
 
     /**
-     * Run viterbi on `input` using specified the HMM
-     * Write each result to `output`
-     * The HMM is specified by `pi`, `A` and `B`,
-     * `T` is max length of any input sequence.
+     * Run viterbi on {@code input} using specified the {@code HMM}
+     * Write each result to {@code output}.
+     * The {@code HMM} is specified by {@code pi}, {@code A} and {@code B},
+     * {@code T} is max length of any input sequence.
      *
-     * @param args = {pi, A, B, T, input, output};
+     * It assumes the following DNA encoding
+     * <br>{@code (a,0)}
+     * <br>{@code (c,1)}
+     * <br>{@code (g,2)}
+     * <br>{@code (t,3)}
+     *
+     * @param args {@code {pi, A, B, T, input, output};}
      * @throws Exception if something goes wrong
      */
     public static void main(String[] args) throws Exception {
@@ -46,5 +49,34 @@ public class DNAViterbiApp {
                 .forEachOrdered(writer::write);
         }
 
+    }
+
+    private DNAViterbiApp() {}
+
+    static class FailFastBufferedWriter implements AutoCloseable {
+
+        final private BufferedWriter bw;
+
+        public FailFastBufferedWriter(String output) {
+            try {
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output), "utf-8"));
+            } catch (UnsupportedEncodingException | FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void close() throws Exception {
+            bw.close();
+        }
+
+        public void write(String line) {
+            try {
+                bw.write(line);
+                bw.newLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
