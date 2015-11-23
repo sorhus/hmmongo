@@ -41,7 +41,7 @@ public class HMM {
      */
     final public int n;
 
-    public HMM(double[] pi, List<Keyed> A, double[][] B) {
+    private HMM(double[] pi, List<Keyed> A, double[][] B) {
         this.pi = pi;
         this.A = A;
         this.B = B;
@@ -127,8 +127,8 @@ public class HMM {
         public HMM build() throws IOException {
             List<Keyed> A;
             if(pi != null && rawA != null && B != null) {
-                pi = transfromArray(pi);
-                A = transfromA(rawA);
+                pi = transformArray(pi);
+                A = transformA(rawA);
                 B = transfromB(B);
             } else {
                 try(Scanner sc = getScanner(piIS)) {
@@ -168,7 +168,7 @@ public class HMM {
             return result;
         }
 
-        private double[] transfromArray(double[] row) {
+        private double[] transformArray(double[] row) {
             double[] result = new double[row.length];
             for (int i = 0; i < row.length; i++) {
                 result[i] = getValue(row[i]);
@@ -193,7 +193,7 @@ public class HMM {
             return A;
         }
 
-        private List<Keyed> transfromA(double[][] rawA) {
+        private List<Keyed> transformA(double[][] rawA) {
             keyedFactory = adjacency ? new KeyedMapFactory() : new KeyedListFactory();
             List<Keyed> A = new ArrayList<>(rawA.length);
             for (int j = 0; j < rawA.length; j++) {
@@ -222,7 +222,7 @@ public class HMM {
         private double[][] transfromB(double[][] B) {
             double[][] result = new double[B.length][];
             for (int i = 0; i < B.length; i++) {
-                result[i] = transfromArray(B[i]);
+                result[i] = transformArray(B[i]);
             }
             return result;
         }
