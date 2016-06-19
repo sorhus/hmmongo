@@ -12,6 +12,7 @@
         <module>scalatra</module>
         <module>hadoop</module>
         <module>thrift</module>
+        <module>presto</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -21,6 +22,7 @@
         <java.version>1.8</java.version>
         <scala.version>2.11.5</scala.version>
         <scalatra.version>2.3.1</scalatra.version>
+        <presto.version>0.147</presto.version>
     </properties>
 
     <dependencyManagement>
@@ -95,6 +97,26 @@
                 <groupId>org.apache.thrift</groupId>
                 <artifactId>libthrift</artifactId>
                 <version>0.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.facebook.presto</groupId>
+                <artifactId>presto-main</artifactId>
+                <version>${presto.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.facebook.presto</groupId>
+                <artifactId>presto-spi</artifactId>
+                <version>${presto.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

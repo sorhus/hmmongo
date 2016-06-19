@@ -27,9 +27,13 @@ class ViterbiImpl<I,O,R extends Result> implements Viterbi<I,R> {
     @Override
     public R apply(I input) {
         int[] observations = encoder.apply(input);
-        initialise(observations[0]);
-        recurse(observations);
-        return terminate(observations);
+        if(observations.length > 0) {
+            initialise(observations[0]);
+            recurse(observations);
+            return terminate(observations);
+        } else {
+            return resultFactory.noPath();
+        }
     }
 
     private void initialise(int first) {
