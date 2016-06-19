@@ -6,6 +6,7 @@ The project consists of a few different parts. A generic library and some applic
 * A hadoop job
 * A http server
 * A thrift server
+* A prestodb plugin
 
 [Javadocs for the library can be found here](http://sorhus.github.io/hmmongo)
 
@@ -57,3 +58,23 @@ Also, in libhmm/src/main/resources there is an HMM that models the T-cell recept
 * If the HMM is big: `export HADOOP_CLIENT_OPT=-Xmx2g`
 * Put the input on hdfs
 * `hadoop jar hadoop/target/hadoop-0.3.0.jar com.twitter.scalding.Tool com.github.sorhus.hmmongo.DNAViterbiJob --hdfs --pi src/main/resources/tcrb_pi.gz --A src/main/resources/tcrb_A.gz --B src/main/resources/tcrb_B.gz --T 101 --input /user/anton/SRR060692_1.sample --output /user/anton/output`
+
+### Deploy the presto plugin
+* Put the jar in the presto plugin direcory, i.e. `presto/plugin/hmmongo/presto-0.4.0.jar`
+* Put a config in the presto etc directory
+```
+cat >> etc/plugin/viterbi.properties <<EOF
+pi.location=/path/to/pi
+A.location=/path/to/A
+B.location=/path/to/B
+T=100
+EOF
+```
+* Test the function like so 
+```
+presto> select viterbi('name','acgt');
+  _col0  
+---------
+ 1,1,2,2 
+(1 row)
+```
